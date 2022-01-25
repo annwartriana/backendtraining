@@ -2,6 +2,9 @@
 
 use Illuminate\Support\Facades\Route;
 
+//Enlazamos la vista de CompaniesController 
+use App\Http\Controllers\CompaniesController;
+
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -16,3 +19,5 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::resource('companies', CompaniesController::class);
