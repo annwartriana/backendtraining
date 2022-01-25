@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Companies;
 use Illuminate\Http\Request;
 
+//Para poder borrar la foto
+use Illuminate\Support\Facades\Storage;
+
 class CompaniesController extends Controller
 {
     /**
@@ -14,7 +17,8 @@ class CompaniesController extends Controller
      */
     public function index()
     {
-        //
+        $datos['companiesList']=Companies::paginate(10);
+        return view ('companies.index',$datos);
     }
 
     /**
@@ -24,7 +28,7 @@ class CompaniesController extends Controller
      */
     public function create()
     {
-        //
+       
         return view ('companies.create');
     }
 
@@ -36,7 +40,28 @@ class CompaniesController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //Incluyendo token:
+        //$datosCompanies = request () -> all();
+        
+        $datosCompanies = request ()->except('_token');
+
+        if($request->hasFile('logo')){
+            $datosCompanies['logo']=$request->file("logo")->store("uploads",'public');
+        }
+
+      /* if($archivo=$request->file('logo')){
+            $nombreImg=$archivo->getClientOriginalName();
+            $archivo->move('images', $nombreImg);
+
+            $datosCompanies['logo']=$nombreImg;
+
+        } */         
+
+        Companies::insert($datosCompanies);
+
+        //return response()->json($datosCompanies);
+
+        return redirect('companies')->with('mensaje','Se agregó la Compañia');
     }
 
     /**
@@ -56,9 +81,11 @@ class CompaniesController extends Controller
      * @param  \App\Models\Companies  $companies
      * @return \Illuminate\Http\Response
      */
-    public function edit(Companies $companies)
+    public function edit($id)
     {
         //
+        $companie=Companies::findOrFail($id);
+        return view ('companies.edit', compact('companie'));
     }
 
     /**
@@ -68,9 +95,24 @@ class CompaniesController extends Controller
      * @param  \App\Models\Companies  $companies
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, Companies $companies)
+    public function update(Request $request, $id)
     {
-        //
+        $datosCompanies = request ()->except(['_token', '_method']);
+
+        //Para verificar si se cambió el logo
+        if($request->hasFile('logo')){
+            $companie=Companies::findOrFail($id);
+            Storage::delete('public'.$companie->logo);
+            $datosCompanies['logo']=$request->file("logo")->store("uploads",'public');
+        }
+
+
+
+
+        Companies::where('id', '=', $id)->update($datosCompanies);
+
+        $companie=Companies::findOrFail($id);
+        return redirect('/companies');
     }
 
     /**
@@ -79,8 +121,21 @@ class CompaniesController extends Controller
      * @param  \App\Models\Companies  $companies
      * @return \Illuminate\Http\Response
      */
-    public function destroy(Companies $companies)
-    {
-        //
+
+
+    //public function destroy(Companies $companies)
+    public function destroy($id)
+    {  
+        $companie=Companies::findOrFail($id);
+
+        if(Storage::delete('public/'.$companie->logo)){
+            Companies::destroy($id);
+        }
+
+        Companies::destroy($id);
+       
+        return redirect('companies')->with('mensaje','Se eliminó la Compañia');
+
+        
     }
 }
