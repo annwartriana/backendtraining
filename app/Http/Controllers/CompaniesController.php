@@ -40,8 +40,20 @@ class CompaniesController extends Controller
      */
     public function store(Request $request)
     {
-        //Incluyendo token:
-        //$datosCompanies = request () -> all();
+    
+       /* $validacion=[
+            'name'=>'required|string|max:100',
+            'email'=>'required|email',
+            'website'=>'required|string|max:100',
+            'logo'=>'required|max:10000|mimes:jpeg,png,jpg',            
+        ];
+
+        $mensaje=['required'=> 'El atributo :attribute es requerido'  ];
+
+        $this-> validate ($request, $validacion,$mensaje);*/
+        
+   
+
         
         $datosCompanies = request ()->except('_token');
 

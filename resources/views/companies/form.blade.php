@@ -1,5 +1,18 @@
 <h1>{{$modo }} Compañia</h1>
     <br>
+
+    
+    @if(count($errors)>0)
+    <div class= "alert alert-danger" role="alert">
+    <ul>
+        @foreach($errors-> all() as $error)
+        <li>{{$error}}</li>
+        @endforeach
+    </ul>
+    </div>
+    @endif
+
+
     <label for="Nombre"> Nombre</label>
     <input type="text" name="Name" value="{{isset($companie->name)? $companie->name:''}}" id="name"><br>
     
