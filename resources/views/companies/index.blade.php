@@ -1,10 +1,13 @@
-Lista de Compañias
+@extends('layouts.app')
+
+@section('content')
+<div class="container">
 <br>
 @if(Session::has('mensaje'))
 {{Session::get('mensaje')}}
 @endif
 <br>
-<a href="{{url('companies/create')}}">Ingresar Nueva Compañia</a>
+<a href="{{url('companies/create')}}" class= "btn btn-success">Ingresar Nueva Compañia</a>
 <br>
 
 <table class="table table-light">
@@ -38,15 +41,17 @@ Lista de Compañias
 
             <td>
             
-            <a href ="{{url('/companies/'.$companies->id.'/edit')}}">Editar </a>
+            <a href ="{{url('/companies/'.$companies->id.'/edit')}}" class="btn btn-primary">Editar </a>
 
             <form action="{{url('/companies/'.$companies->id)}}" method="post">
             @csrf
             {{method_field('DELETE')}}
-            <input type="submit" onclick="return confirm('Eliminarás el registro')" value="Eliminar">
+            <input type="submit" onclick="return confirm('Eliminarás el registro')" class="btn btn-danger" value="Eliminar">
             </form>
             </td>
         </tr>
         @endforeach
     </tbody>
 </table>
+</div>
+@endsection

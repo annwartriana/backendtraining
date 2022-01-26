@@ -17,7 +17,16 @@ use App\Http\Controllers\CompaniesController;
 */
 
 Route::get('/', function () {
-    return view('welcome');
+    return view('auth.login');
 });
 
-Route::resource('companies', CompaniesController::class);
+Route::resource('companies', CompaniesController::class)->middleware('auth');
+
+Auth::routes(['register'=>false, 'reset'=> false]);
+
+Route::get('/home', [CompaniesController::class, 'index'])->name('home');
+
+Route::group(['middleware' => 'auth'], function(){
+    Route::get('/', [CompaniesController::class, 'index'])->name('home');
+
+});
